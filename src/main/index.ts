@@ -3,8 +3,8 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { AppModule } from './modules/app.module'
-import { WeatherService } from './modules/weather/weather.service'
 import { NestFactory } from '@nestjs/core'
+import { ElectronIpcTransport } from '@doubleshot/nest-electron'
 
 function createWindow(): void {
   // Create the browser window.
@@ -52,15 +52,18 @@ app.whenReady().then(async () => {
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
   })
-  const nestApp = await NestFactory.createApplicationContext(AppModule)
-  const weatherService = nestApp.get(WeatherService)
+  const nestApp = await NestFactory.createMicroservice(AppModule, {
+    strategy: new ElectronIpcTransport()
+  })
+  await nestApp.listen()
+  /* const weatherService = nestApp.get(WeatherService)
 
-  ipcMain.handle('weather:get-measurements', ()=> {
+  ipcMain.handle('weather:get-measurements', () => {
     return weatherService.getMeasurements()
   })
-  ipcMain.handle('weather:add-measurement', (_, temperature: number, humidity: number)=> {
+  ipcMain.handle('weather:add-measurement', (_, temperature: number, humidity: number) => {
     return weatherService.addMeasurement(temperature, humidity)
-  })
+  }) */
 
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
