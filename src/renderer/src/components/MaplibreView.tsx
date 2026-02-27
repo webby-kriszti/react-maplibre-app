@@ -9,7 +9,7 @@ const MaplibreView = (): ReactElement => {
     if (containerRef.current) {
       mapRendererRef.current = new MapRenderer({
         container: containerRef.current,
-        center: [0, 0],
+        center: [19.04, 47.49],
         zoom: 6
       })
     }

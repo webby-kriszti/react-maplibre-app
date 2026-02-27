@@ -1,5 +1,6 @@
 import { MapChildRenderer } from './MapChildRenderer'
 import maplibregl from 'maplibre-gl'
+import { MarkerRenderer } from './MarkerRenderer'
 
 interface Config {
   container: HTMLDivElement
@@ -12,6 +13,7 @@ export class MapRenderer {
   private rafId: number | null = null
   private children: MapChildRenderer[] = []
   private tick: () => void
+  private markerRenderer: MarkerRenderer
   constructor(config: Config) {
     this.map = new maplibregl.Map({
       container: config.container,
@@ -28,6 +30,8 @@ export class MapRenderer {
       this.rafId = requestAnimationFrame(this.tick)
     }
     this.rafId = requestAnimationFrame(this.tick)
+    this.markerRenderer = new MarkerRenderer([19.04, 47.49])
+    this.add(this.markerRenderer)
   }
   add(child: MapChildRenderer): void {
     this.children.push(child)
