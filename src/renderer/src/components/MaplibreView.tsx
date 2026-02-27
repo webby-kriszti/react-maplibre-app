@@ -19,7 +19,7 @@ const MaplibreView = (): ReactElement => {
     }
   }, [])
 
-  return <div ref={containerRef} style={{ height: '100vh', width: '100%' }} />
+  return <div ref={containerRef} style={{ height: '100%', width: '100%' }} />
 }
 
 export default MaplibreView

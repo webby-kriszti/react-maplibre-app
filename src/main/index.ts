@@ -9,8 +9,8 @@ import { ElectronIpcTransport } from '@doubleshot/nest-electron'
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
+    width: 1800,
+    height: 1500,
     show: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
@@ -19,7 +19,7 @@ function createWindow(): void {
       sandbox: false
     }
   })
-  mainWindow.webContents.openDevTools()
+  mainWindow.webContents.openDevTools({ mode: 'right' })
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
