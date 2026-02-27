@@ -2,6 +2,9 @@ import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+import { AppModule } from './modules/app.module'
+import { WeatherService } from './modules/weather/weather.service'
+import { NestFactory } from '@nestjs/core'
 
 function createWindow(): void {
   // Create the browser window.
@@ -16,6 +19,7 @@ function createWindow(): void {
       sandbox: false
     }
   })
+  mainWindow.webContents.openDevTools()
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
@@ -38,7 +42,7 @@ function createWindow(): void {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron')
 
@@ -47,6 +51,15 @@ app.whenReady().then(() => {
   // see https://github.com/alex8088/electron-toolkit/tree/master/packages/utils
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
+  })
+  const nestApp = await NestFactory.createApplicationContext(AppModule)
+  const weatherService = nestApp.get(WeatherService)
+
+  ipcMain.handle('weather:get-measurements', ()=> {
+    return weatherService.getMeasurements()
+  })
+  ipcMain.handle('weather:add-measurement', (_, temperature: number, humidity: number)=> {
+    return weatherService.addMeasurement(temperature, humidity)
   })
 
   // IPC test

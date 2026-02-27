@@ -1,8 +1,12 @@
-import { contextBridge } from 'electron'
+import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 
 // Custom APIs for renderer
-const api = {}
+const api = {
+  getMeasurements: () => ipcRenderer.invoke('weather:get-measurements'),
+  addMeasurement: (temperature: number, humidity: number) =>
+    ipcRenderer.invoke('weather:add-measurement', temperature, humidity)
+}
 
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise
