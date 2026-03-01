@@ -1,29 +1,47 @@
 import { MapChildRenderer } from './MapChildRenderer'
 import maplibregl from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
+import { useDeviceStore } from '@renderer/store/device.store'
 
 export class MarkerRenderer implements MapChildRenderer {
   private initialized: boolean = false
   private dirty: boolean = false
-  private marker: maplibregl.Marker | null = null
-  private coordinates: [number, number]
-  constructor(coordinates: [number, number]) {
-    this.coordinates = coordinates
+  private markers: Map<string, maplibregl.Marker> | null = null
+  private unsubscribe: () => void
+  constructor() {
+    this.unsubscribe = useDeviceStore.subscribe(
+      (state) => state.devices,
+      () => {
+        this.dirty = true
+      }
+    )
   }
-  init(map: maplibregl.Map): void {
+  init(): void {
     console.log('init')
-    this.marker = new maplibregl.Marker().setLngLat(this.coordinates).addTo(map)
+    this.markers = new Map()
     this.initialized = true
+    this.dirty = true
   }
   update(map: maplibregl.Map): void {
     if (!map.loaded) return
     if (!this.initialized) {
-      this.init(map)
+      this.init()
     }
     if (!this.dirty) return
+    const devices = useDeviceStore.getState().devices
+
+    devices.forEach((device) => {
+      if (!this.markers!.has(device.id)) {
+        // Új marker létrehozása
+        const marker = new maplibregl.Marker().setLngLat(device.coordinates).addTo(map)
+        this.markers!.set(device.id, marker)
+      }
+    })
+    this.dirty = false
   }
   destroy(): void {
-    this.marker?.remove()
-    this.marker = null
+    this.unsubscribe()
+    this.markers?.forEach((marker) => marker.remove())
+    this.markers = null
   }
 }

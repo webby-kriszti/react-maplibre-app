@@ -1,4 +1,5 @@
 export enum Tab {
   MAP = 'Map',
-  WEATHER = 'Weather'
+  WEATHER = 'Weather',
+  ZUSTAND = 'Zustand'
 }

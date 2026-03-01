@@ -8,6 +8,12 @@ interface WeatherState {
     setMeasurements: (measurements: Measurement[]) => void
   }
 }
+const fn = (set) => ({
+  measurements: [],
+  actions: {
+    setMeasurements: (measurements) => set({ measurements: measurements })
+  }
+})
 export const useWeatherStore = create<WeatherState>()(
   subscribeWithSelector((set) => ({
     measurements: [],
@@ -16,3 +22,4 @@ export const useWeatherStore = create<WeatherState>()(
     }
   }))
 )
+

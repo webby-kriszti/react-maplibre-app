@@ -30,7 +30,7 @@ export class MapRenderer {
       this.rafId = requestAnimationFrame(this.tick)
     }
     this.rafId = requestAnimationFrame(this.tick)
-    this.markerRenderer = new MarkerRenderer([19.04, 47.49])
+    this.markerRenderer = new MarkerRenderer()
     this.add(this.markerRenderer)
   }
   add(child: MapChildRenderer): void {
