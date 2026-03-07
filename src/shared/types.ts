@@ -3,13 +3,18 @@ export interface Measurement {
   temperature: number
   humidity: number
   timeStamp: Date
-  // te töltöd ki
 }
 export type Coordinates = [number, number]
 
-export interface Device {
+export interface Mappable {
   id: string
-  name: string
   coordinates: Coordinates
+}
+
+export interface Device extends Mappable{
+  name: string
   isActive: boolean
+}
+export interface Station extends Mappable {
+  name: string
 }

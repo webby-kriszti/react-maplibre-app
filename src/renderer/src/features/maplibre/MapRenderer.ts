@@ -1,6 +1,7 @@
 import { MapChildRenderer } from './MapChildRenderer'
 import maplibregl from 'maplibre-gl'
 import { MarkerRenderer } from './MarkerRenderer'
+import { DeviceDataSource } from '../DeviceDataSource'
 
 interface Config {
   container: HTMLDivElement
@@ -30,7 +31,7 @@ export class MapRenderer {
       this.rafId = requestAnimationFrame(this.tick)
     }
     this.rafId = requestAnimationFrame(this.tick)
-    this.markerRenderer = new MarkerRenderer()
+    this.markerRenderer = new MarkerRenderer(new DeviceDataSource())
     this.add(this.markerRenderer)
   }
   add(child: MapChildRenderer): void {

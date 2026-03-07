@@ -1,20 +1,17 @@
 import { MapChildRenderer } from './MapChildRenderer'
 import maplibregl from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
-import { useDeviceStore } from '@renderer/store/device.store'
+import { BaseDataSource } from '../BaseDataSource'
+import { Device } from 'src/shared/types'
 
 export class MarkerRenderer implements MapChildRenderer {
   private initialized: boolean = false
   private dirty: boolean = false
   private markers: Map<string, maplibregl.Marker> | null = null
-  private unsubscribe: () => void
-  constructor() {
-    this.unsubscribe = useDeviceStore.subscribe(
-      (state) => state.devices,
-      () => {
-        this.dirty = true
-      }
-    )
+  constructor(private readonly dataSource: BaseDataSource<Device>) {
+    dataSource.subscribeToDevices(() => {
+      this.dirty = true
+    })
   }
   init(): void {
     console.log('init')
@@ -28,7 +25,7 @@ export class MarkerRenderer implements MapChildRenderer {
       this.init()
     }
     if (!this.dirty) return
-    const devices = useDeviceStore.getState().devices
+    const devices = this.dataSource.items ?? []
 
     devices.forEach((device) => {
       if (!this.markers!.has(device.id)) {
@@ -40,7 +37,6 @@ export class MarkerRenderer implements MapChildRenderer {
     this.dirty = false
   }
   destroy(): void {
-    this.unsubscribe()
     this.markers?.forEach((marker) => marker.remove())
     this.markers = null
   }
