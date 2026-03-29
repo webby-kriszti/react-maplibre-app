@@ -11,7 +11,7 @@ export interface Mappable {
   coordinates: Coordinates
 }
 
-export interface Device extends Mappable{
+export interface Device extends Mappable {
   name: string
   isActive: boolean
 }

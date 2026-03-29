@@ -1,25 +1,48 @@
-import { Mappable } from 'src/shared/types'
 import { Subscriptor } from './Subscriptors'
 
-export abstract class BaseDataSource<T extends Mappable> {
-  private subscriptor: Subscriptor<T[]>
-  protected abstract getDevices(): T[]
-  protected abstract subscribeToStore(cb: (value: T[] | undefined) => void): () => void
-  constructor() {
-    this.subscriptor = new Subscriptor<T[]>(
-      () => this.getDevices(),
-      (cb) => this.subscribeToStore(cb),
-      () => false
-    )
+export abstract class BaseDataSource<T> {
+  private _stationsSub: Subscriptor<T[]> | null = null
+  private _selectedSub: Subscriptor<T | null> | null = null
+  protected abstract getStations(): T[]
+  protected abstract doSubscribeToStations(cb: (value: T[] | undefined) => void): () => void
+  protected abstract doSubscribeToSelectedStation(cb: (value: T | null) => void): () => void
+  protected abstract getSelectedStation(): T | null
+
+  private get stationsSub(): Subscriptor<T[]> {
+    if (!this._stationsSub) {
+      this._stationsSub = new Subscriptor<T[]>(
+        () => this.getStations(),
+        (cb) => this.doSubscribeToStations(cb),
+        (a, b) => a === b
+      )
+    }
+    return this._stationsSub
+  }
+  private get selectedSub(): Subscriptor<T | null> {
+    if (!this._selectedSub) {
+      this._selectedSub = new Subscriptor<T | null>(
+        () => this.getSelectedStation(),
+        (cb) => this.doSubscribeToSelectedStation(cb),
+        (a, b) => a === b
+      )
+    }
+    return this._selectedSub
   }
   public get items(): T[] | undefined {
-    return this.subscriptor.value
+    return this.stationsSub.value
   }
-  public subscribeToDevices(callback: (value: T[] | undefined) => void): void {
-    this.subscriptor.subscribe(callback)
+  public get selectedItem(): T | null {
+    return this.selectedSub.value
+  }
+  public subscribeToStations(cb: (value: T[] | undefined) => void): void {
+    this.stationsSub.subscribe(cb)
   }
 
+  public subscribeToSelected(cb: (value: T | null) => void): void {
+    this.selectedSub.subscribe(cb)
+  }
   public destroy(): void {
-    this.subscriptor.destroy()
+    this._stationsSub?.destroy()
+    this._selectedSub?.destroy()
   }
 }
