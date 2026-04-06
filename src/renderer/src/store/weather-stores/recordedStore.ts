@@ -2,24 +2,21 @@ import { Station } from 'src/shared/types'
 import { create } from 'zustand'
 import { subscribeWithSelector } from 'zustand/middleware'
 
-interface OmStore {
+interface RecordedStore {
   stations: Station[]
   selectedStation: Station | null
   actions: {
-    addStation: (station: Station) => void
     selectStation: (station: Station) => void
   }
 }
-export const useOmStore = create<OmStore>()(
+export const useRecordedStore = create<RecordedStore>()(
   subscribeWithSelector((set) => ({
-    stations: [{ id: 'a1', name: 'Budapest1', coordinates: [19.16, 47.69], measurements: [] }],
+    stations: [
+      { id: 's1', name: 'Debrecen', coordinates: [21.62, 47.53], measurements: [] },
+      { id: 's2', name: 'Pécs', coordinates: [18.23, 46.07], measurements: [] }
+    ],
     selectedStation: null,
     actions: {
-      addStation: (station) => {
-        return set((state) => {
-          return { stations: [...state.stations, station] }
-        })
-      },
       selectStation: (station) => set({ selectedStation: station })
     }
   }))

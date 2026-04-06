@@ -12,7 +12,7 @@ interface MeteoHungaryStore {
 }
 export const useMeteoHungaryStore = create<MeteoHungaryStore>()(
   subscribeWithSelector((set) => ({
-    stations: [{ id: 'a1', name: 'Budapest1', coordinates: [19.06, 47.69] }],
+    stations: [{ id: 'a1', name: 'Budapest1', coordinates: [19.06, 47.69], measurements: [] }],
     selectedStation: null,
     actions: {
       addStation: (station) => {

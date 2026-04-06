@@ -4,6 +4,15 @@ export interface Measurement {
   humidity: number
   timeStamp: Date
 }
+export interface StationMeasurement {
+  temperature: number
+  timestamp: Date
+}
+
+export interface Station extends Mappable {
+  name: string
+  measurements: StationMeasurement[]
+}
 export type Coordinates = [number, number]
 
 export interface Mappable {
@@ -14,7 +23,4 @@ export interface Mappable {
 export interface Device extends Mappable {
   name: string
   isActive: boolean
-}
-export interface Station extends Mappable {
-  name: string
 }

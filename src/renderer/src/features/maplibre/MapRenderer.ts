@@ -2,6 +2,7 @@ import { MapChildRenderer } from './MapChildRenderer'
 import maplibregl from 'maplibre-gl'
 import { LiveStationDataSource } from '../LiveStationDataSource'
 import { StationMarkerRenderer } from './StationMarkerRenderer'
+import { StaticStationDataSource } from '../StaticStationDataSource'
 
 interface Config {
   container: HTMLDivElement
@@ -15,6 +16,7 @@ export class MapRenderer {
   private children: MapChildRenderer[] = []
   private tick: () => void
   private stationMarkerRenderer: StationMarkerRenderer
+  private recordedMarkerRenderer: StationMarkerRenderer
   constructor(config: Config) {
     this.map = new maplibregl.Map({
       container: config.container,
@@ -32,7 +34,12 @@ export class MapRenderer {
     }
     this.rafId = requestAnimationFrame(this.tick)
     this.stationMarkerRenderer = new StationMarkerRenderer(new LiveStationDataSource())
+    this.recordedMarkerRenderer = new StationMarkerRenderer(
+      new StaticStationDataSource(),
+      '#ff0000'
+    )
     this.add(this.stationMarkerRenderer)
+    this.add(this.recordedMarkerRenderer)
   }
   add(child: MapChildRenderer): void {
     this.children.push(child)

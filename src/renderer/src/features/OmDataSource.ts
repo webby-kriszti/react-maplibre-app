@@ -1,21 +1,21 @@
 import { Station } from 'src/shared/types'
 import { BaseDataSource } from './BaseDataSource'
-import { useRecordedStore } from '@renderer/store/weather-stores/recordedStore'
+import { useOmStore } from '@renderer/store/weather-stores/omStore'
 
-export class StaticStationDataSource extends BaseDataSource<Station> {
+export class OmDataSource extends BaseDataSource<Station> {
   constructor() {
     super()
   }
   protected getStations(): Station[] {
-    return useRecordedStore.getState().stations
+    return useOmStore.getState().stations
   }
   protected doSubscribeToStations(cb: (value: Station[] | undefined) => void): () => void {
-    return useRecordedStore.subscribe((s) => s.stations, cb)
+    return useOmStore.subscribe((s) => s.stations, cb)
   }
   protected getSelectedStation(): Station | null {
-    return useRecordedStore.getState().selectedStation
+    return useOmStore.getState().selectedStation
   }
   protected doSubscribeToSelectedStation(cb: (value: Station | null) => void): () => void {
-    return useRecordedStore.subscribe((s)=> s.selectedStation, cb)
+    return useOmStore.subscribe((s) => s.selectedStation, cb)
   }
 }

@@ -32,14 +32,14 @@ export abstract class BaseDataSource<T> {
     return this.stationsSub.value
   }
   public get selectedItem(): T | null {
-    return this.selectedSub.value
+    return this.selectedSub.value ?? null
   }
   public subscribeToStations(cb: (value: T[] | undefined) => void): void {
     this.stationsSub.subscribe(cb)
   }
 
   public subscribeToSelected(cb: (value: T | null) => void): void {
-    this.selectedSub.subscribe(cb)
+    this.selectedSub.subscribe((value) => cb(value ?? null))
   }
   public destroy(): void {
     this._stationsSub?.destroy()

@@ -9,7 +9,10 @@ export class StationMarkerRenderer implements MapChildRenderer {
   private dirty: boolean = false
   private markers: Map<string, maplibregl.Marker> | null = null
 
-  constructor(private readonly dataSource: BaseDataSource<Station>) {
+  constructor(
+    private readonly dataSource: BaseDataSource<Station>,
+    private readonly color: string = 'blue'
+  ) {
     dataSource.subscribeToStations(() => {
       this.dirty = true
     })
@@ -32,7 +35,9 @@ export class StationMarkerRenderer implements MapChildRenderer {
     stations.forEach((station) => {
       console.log('marker van már?', this.markers!.has(station.id))
       if (!this.markers!.has(station.id)) {
-        const marker = new maplibregl.Marker().setLngLat(station.coordinates).addTo(map)
+        const marker = new maplibregl.Marker({ color: this.color })
+          .setLngLat(station.coordinates)
+          .addTo(map)
         console.log('marker létrehozva', marker)
         this.markers!.set(station.id, marker)
       }

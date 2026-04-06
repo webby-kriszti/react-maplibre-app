@@ -9,7 +9,7 @@ export class MarkerRenderer implements MapChildRenderer {
   private dirty: boolean = false
   private markers: Map<string, maplibregl.Marker> | null = null
   constructor(private readonly dataSource: BaseDataSource<Device>) {
-    dataSource.subscribeToDevices(() => {
+    dataSource.subscribeToStations(() => {
       this.dirty = true
     })
   }
