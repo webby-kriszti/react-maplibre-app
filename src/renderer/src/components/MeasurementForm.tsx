@@ -1,17 +1,18 @@
-import { meteoHungaryService } from '@renderer/store/meteoHungaryService'
-import { useMeteoHungaryStore } from '@renderer/store/weather-stores/meteoHungaryStore'
+import { useLiveStationStore } from '@renderer/store/weather-stores/liveStataionStore'
+import { liveStationService } from '@renderer/store/weather-stores/liveStationService'
 import { ReactElement, useState } from 'react'
 import { Station } from 'src/shared/types'
 
 const MeasurementForm = (): ReactElement => {
   const [temperature, setTemperature] = useState(0)
   const [stationId, setStationId] = useState('')
-  const stations: Station[] = useMeteoHungaryStore((s) => s.stations)
+  const stations: Station[] = useLiveStationStore((s) => s.stations)
   const measurement = { temperature: temperature, timestamp: new Date() }
   const handleSend = (): void => {
-    meteoHungaryService.addMeasurement(stationId, measurement)
+    liveStationService.addMeasurement(stationId, measurement)
   }
-  console.log(stations)
+  console.log('stations:', stations)
+
   return (
     <>
       <div>MeasurementForm</div>
@@ -30,7 +31,6 @@ const MeasurementForm = (): ReactElement => {
         </label>
         <button onClick={handleSend}>Add new measurement</button>
       </div>
-
     </>
   )
 }

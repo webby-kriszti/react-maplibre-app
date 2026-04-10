@@ -1,6 +1,6 @@
-import { meteoHungaryService } from '@renderer/store/meteoHungaryService'
 import { ReactElement, useState } from 'react'
 import { Station, StationSource } from '../../../shared/types'
+import { liveStationService } from '@renderer/store/weather-stores/liveStationService'
 
 export const StationForm = (): ReactElement => {
   const [name, setName] = useState('')
@@ -16,7 +16,7 @@ export const StationForm = (): ReactElement => {
       measurements: [],
       source
     }
-    meteoHungaryService.addStation(station)
+    liveStationService.addStation(station)
     setName('')
     setLat(0)
     setLng(0)
