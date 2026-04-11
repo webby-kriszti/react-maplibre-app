@@ -5,13 +5,14 @@ import { Station } from 'src/shared/types'
 
 const MeasurementForm = (): ReactElement => {
   const [temperature, setTemperature] = useState(0)
-  const [stationId, setStationId] = useState('')
+  
   const stations: Station[] = useLiveStationStore((s) => s.stations)
+  const [stationId, setStationId] = useState(stations[0].id ?? '')
   const measurement = { temperature: temperature, timestamp: new Date() }
   const handleSend = (): void => {
     liveStationService.addMeasurement(stationId, measurement)
   }
-  console.log('stations:', stations)
+  console.log('measurement:', measurement)
 
   return (
     <>

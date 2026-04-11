@@ -1,3 +1,4 @@
+
 import { Subscriptor } from './Subscriptors'
 
 export abstract class BaseDataSource<T> {
@@ -7,6 +8,7 @@ export abstract class BaseDataSource<T> {
   protected abstract doSubscribeToStations(cb: (value: T[] | undefined) => void): () => void
   protected abstract doSubscribeToSelectedStation(cb: (value: T | null) => void): () => void
   protected abstract getSelectedStation(): T | null
+  protected abstract doSelectStation(station: T): void
 
   private get stationsSub(): Subscriptor<T[]> {
     if (!this._stationsSub) {
@@ -40,6 +42,9 @@ export abstract class BaseDataSource<T> {
 
   public subscribeToSelected(cb: (value: T | null) => void): void {
     this.selectedSub.subscribe((value) => cb(value ?? null))
+  }
+  public selectStation(station: T): void {
+    this.doSelectStation(station)
   }
   public destroy(): void {
     this._stationsSub?.destroy()

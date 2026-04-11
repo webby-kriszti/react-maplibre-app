@@ -1,6 +1,7 @@
 import { Station } from 'src/shared/types'
 import { BaseDataSource } from './BaseDataSource'
 import { useRecordedStore } from '@renderer/store/weather-stores/recordedStore'
+import { recordedStationService } from '@renderer/store/recordedStationService'
 
 export class StaticStationDataSource extends BaseDataSource<Station> {
   constructor() {
@@ -16,6 +17,9 @@ export class StaticStationDataSource extends BaseDataSource<Station> {
     return useRecordedStore.getState().selectedStation
   }
   protected doSubscribeToSelectedStation(cb: (value: Station | null) => void): () => void {
-    return useRecordedStore.subscribe((s)=> s.selectedStation, cb)
+    return useRecordedStore.subscribe((s) => s.selectedStation, cb)
+  }
+  protected doSelectStation(station: Station): void {
+    recordedStationService.selectStation(station)
   }
 }

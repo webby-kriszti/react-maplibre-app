@@ -3,6 +3,7 @@ import { BaseDataSource } from '../BaseDataSource'
 import { MapChildRenderer } from './MapChildRenderer'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import maplibregl from 'maplibre-gl'
+import { getTemperatureColor } from '@renderer/utils/colorHelper'
 
 export class StationMarkerRenderer implements MapChildRenderer {
   private initialized: boolean = false
@@ -29,16 +30,23 @@ export class StationMarkerRenderer implements MapChildRenderer {
       this.init()
     }
     if (!this.dirty) return
-    console.log('dirty true, rajzolunk')
+    this.markers!.forEach((marker) => marker.remove())
+    this.markers!.clear()
     const stations = this.dataSource.items ?? []
     console.log('stations:', stations)
     stations.forEach((station) => {
       console.log('marker van már?', this.markers!.has(station.id))
       if (!this.markers!.has(station.id)) {
-        const marker = new maplibregl.Marker({ color: this.color })
+        const measurementsLength = station.measurements.length
+        console.log(measurementsLength)
+        const color =
+          getTemperatureColor(station.measurements[measurementsLength - 1]?.temperature) ?? 'blue'
+        const marker = new maplibregl.Marker({ color: color })
           .setLngLat(station.coordinates)
           .addTo(map)
-        console.log('marker létrehozva', marker)
+        marker.getElement().addEventListener('click', () => {
+          this.dataSource.selectStation(station)
+        })
         this.markers!.set(station.id, marker)
       }
     })
