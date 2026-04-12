@@ -12,10 +12,13 @@ export class OmDataSource extends BaseDataSource<Station> {
   protected doSubscribeToStations(cb: (value: Station[] | undefined) => void): () => void {
     return useOmStore.subscribe((s) => s.stations, cb)
   }
+  protected doSubscribeToSelectedStation(cb: (value: Station | null) => void): () => void {
+    return useOmStore.subscribe((s) => s.selectedStation, cb)
+  }
   protected getSelectedStation(): Station | null {
     return useOmStore.getState().selectedStation
   }
-  protected doSubscribeToSelectedStation(cb: (value: Station | null) => void): () => void {
-    return useOmStore.subscribe((s) => s.selectedStation, cb)
+  protected doSelectStation(station: Station): void {
+    useOmStore.getState().actions.selectStation(station)
   }
 }

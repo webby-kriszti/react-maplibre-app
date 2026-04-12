@@ -1,4 +1,4 @@
-import { Station, StationSource } from 'src/shared/types'
+import { Station, StationSource } from '../../../../shared/types'
 import { create } from 'zustand'
 import { subscribeWithSelector } from 'zustand/middleware'
 
@@ -16,7 +16,7 @@ export const useOmStore = create<OmStore>()(
       {
         id: 'a1',
         name: 'Budapest1',
-        coordinates: [19.16, 47.69],
+        coordinates: [19.86, 48.69],
         measurements: [],
         source: StationSource.OM
       }

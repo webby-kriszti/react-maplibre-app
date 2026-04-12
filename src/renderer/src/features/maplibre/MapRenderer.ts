@@ -6,6 +6,7 @@ import { StaticStationDataSource } from '../StaticStationDataSource'
 import { MapType } from '@renderer/types'
 import { BaseDataSource } from '../BaseDataSource'
 import { Station } from 'src/shared/types'
+import { OmDataSource } from '../OmDataSource'
 
 interface Config {
   container: HTMLDivElement
@@ -20,8 +21,9 @@ export class MapRenderer {
   private children: MapChildRenderer[] = []
   private tick: () => void
   private stationMarkerRenderer: StationMarkerRenderer
-  //private recordedMarkerRenderer: StationMarkerRenderer
+  private omStationRenderer: StationMarkerRenderer | null = null
   private datasource: BaseDataSource<Station>
+  private omDataSource: BaseDataSource<Station> | null = null
   constructor(config: Config) {
     console.log(config.mode)
     this.map = new maplibregl.Map({
@@ -40,9 +42,21 @@ export class MapRenderer {
       }
       this.rafId = requestAnimationFrame(this.tick)
     }
+    this.omDataSource = config.mode === MapType.MAP_LIVE ? new OmDataSource() : null
     this.rafId = requestAnimationFrame(this.tick)
     this.stationMarkerRenderer = new StationMarkerRenderer(this.datasource)
     this.add(this.stationMarkerRenderer)
+
+    if (config.mode === MapType.MAP_LIVE && this.omDataSource) {
+      this.omStationRenderer = new StationMarkerRenderer(this.omDataSource, 'yellow')
+      this.add(this.omStationRenderer)
+      this.omDataSource.subscribeToSelected((station) => {
+        if (station) {
+          this.map.flyTo({ center: station.coordinates, zoom: 10 })
+        }
+      })
+    }
+
     this.datasource.subscribeToSelected((station) => {
       if (station) {
         this.map.flyTo({ center: station.coordinates, zoom: 10 })

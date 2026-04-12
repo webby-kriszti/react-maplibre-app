@@ -4,11 +4,14 @@ import { ReactElement, useState } from 'react'
 import { Station } from 'src/shared/types'
 
 const MeasurementForm = (): ReactElement => {
-  const [temperature, setTemperature] = useState(0)
-  
+  const [temperature, setTemperature] = useState<string>('0')
+
   const stations: Station[] = useLiveStationStore((s) => s.stations)
   const [stationId, setStationId] = useState(stations[0].id ?? '')
-  const measurement = { temperature: temperature, timestamp: new Date() }
+  const measurement = {
+    temperature: parseFloat(temperature),
+    timestamp: new Date()
+  }
   const handleSend = (): void => {
     liveStationService.addMeasurement(stationId, measurement)
   }
@@ -28,7 +31,11 @@ const MeasurementForm = (): ReactElement => {
         </select>
         <label>
           Temperature:{' '}
-          <input value={temperature} onChange={(e) => setTemperature(Number(e.target.value))} />
+          <input
+            type="number"
+            value={temperature}
+            onChange={(e) => setTemperature(e.target.value)}
+          />
         </label>
         <button onClick={handleSend}>Add new measurement</button>
       </div>

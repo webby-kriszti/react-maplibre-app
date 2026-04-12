@@ -12,11 +12,12 @@ export class StationMarkerRenderer implements MapChildRenderer {
 
   constructor(
     private readonly dataSource: BaseDataSource<Station>,
-    private readonly color: string = 'blue'
+    private readonly color: string = 'purple'
   ) {
     dataSource.subscribeToStations(() => {
       this.dirty = true
     })
+
   }
   init(): void {
     console.log('init')
@@ -35,20 +36,18 @@ export class StationMarkerRenderer implements MapChildRenderer {
     const stations = this.dataSource.items ?? []
     console.log('stations:', stations)
     stations.forEach((station) => {
-      console.log('marker van már?', this.markers!.has(station.id))
-      if (!this.markers!.has(station.id)) {
-        const measurementsLength = station.measurements.length
-        console.log(measurementsLength)
-        const color =
-          getTemperatureColor(station.measurements[measurementsLength - 1]?.temperature) ?? 'blue'
-        const marker = new maplibregl.Marker({ color: color })
-          .setLngLat(station.coordinates)
-          .addTo(map)
-        marker.getElement().addEventListener('click', () => {
-          this.dataSource.selectStation(station)
-        })
-        this.markers!.set(station.id, marker)
-      }
+      const measurementsLength = station.measurements.length
+      const color =
+        measurementsLength > 0
+          ? getTemperatureColor(station.measurements[measurementsLength - 1]?.temperature)
+          : this.color
+      const marker = new maplibregl.Marker({ color: color })
+        .setLngLat(station.coordinates)
+        .addTo(map)
+      marker.getElement().addEventListener('click', () => {
+        this.dataSource.selectStation(station)
+      })
+      this.markers!.set(station.id, marker)
     })
     this.dirty = false
   }
