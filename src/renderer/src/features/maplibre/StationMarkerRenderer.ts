@@ -17,9 +17,9 @@ export class StationMarkerRenderer implements MapChildRenderer {
     dataSource.subscribeToStations(() => {
       this.dirty = true
     })
-
   }
-  init(): void {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  init(map: maplibregl.Map): void {
     console.log('init')
     this.markers = new Map()
     this.initialized = true
@@ -28,7 +28,7 @@ export class StationMarkerRenderer implements MapChildRenderer {
   update(map: maplibregl.Map): void {
     if (!map.loaded()) return
     if (!this.initialized) {
-      this.init()
+      this.init(map)
     }
     if (!this.dirty) return
     this.markers!.forEach((marker) => marker.remove())
