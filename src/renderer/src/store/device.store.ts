@@ -6,7 +6,7 @@ interface DeviceStore {
   devices: Device[]
   selectedDevice: Device | null
   actions: {
-    addDevice: (Device) => void
+    addDevice: (device: Device) => void
     selectDevice: (device: Device) => void
   }
 }

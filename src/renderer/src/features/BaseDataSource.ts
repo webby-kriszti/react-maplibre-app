@@ -1,4 +1,3 @@
-
 import { Subscriptor } from './Subscriptors'
 
 export abstract class BaseDataSource<T> {

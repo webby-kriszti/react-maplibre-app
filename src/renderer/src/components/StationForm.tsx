@@ -25,15 +25,17 @@ export const StationForm = (): ReactElement => {
     <>
       <div>StaionForm</div>
       <label>
-        Station name: <input value={name} onChange={(e) => setName(e.target.value)} type="string" />
+        Station name: <input value={name} onChange={(e) => setName(e.target.value)} type="text" />
       </label>
       <label>
         Station source:{' '}
-        <input
-          value={source}
-          onChange={(e) => setSource(StationSource[e.target.value])}
-          type="string"
-        />
+        <select value={source} onChange={(e) => setSource(e.target.value as StationSource)}>
+          {Object.values(StationSource).map((val) => (
+            <option value={val} key={val}>
+              {val}
+            </option>
+          ))}
+        </select>
       </label>
       <label>
         Station coordinates:

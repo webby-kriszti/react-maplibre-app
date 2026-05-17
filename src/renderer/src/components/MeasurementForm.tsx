@@ -7,7 +7,7 @@ const MeasurementForm = (): ReactElement => {
   const [temperature, setTemperature] = useState<string>('0')
 
   const stations: Station[] = useLiveStationStore((s) => s.stations)
-  const [stationId, setStationId] = useState(stations[0].id ?? '')
+  const [stationId, setStationId] = useState(stations[0]?.id ?? '')
   const measurement = {
     temperature: parseFloat(temperature),
     timestamp: new Date()

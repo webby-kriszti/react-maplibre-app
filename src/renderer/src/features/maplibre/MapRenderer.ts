@@ -7,6 +7,7 @@ import { MapType } from '@renderer/types'
 import { BaseDataSource } from '../BaseDataSource'
 import { Station } from 'src/shared/types'
 import { OmDataSource } from '../OmDataSource'
+import { CircleRenderer } from './CirceRenderer'
 
 interface Config {
   container: HTMLDivElement
@@ -21,6 +22,7 @@ export class MapRenderer {
   private children: MapChildRenderer[] = []
   private tick: () => void
   private stationMarkerRenderer: StationMarkerRenderer
+  private circleRenderer: CircleRenderer
   private omStationRenderer: StationMarkerRenderer | null = null
   private datasource: BaseDataSource<Station>
   private omDataSource: BaseDataSource<Station> | null = null
@@ -45,7 +47,9 @@ export class MapRenderer {
     this.omDataSource = config.mode === MapType.MAP_LIVE ? new OmDataSource() : null
     this.rafId = requestAnimationFrame(this.tick)
     this.stationMarkerRenderer = new StationMarkerRenderer(this.datasource)
+    this.circleRenderer = new CircleRenderer(this.datasource)
     this.add(this.stationMarkerRenderer)
+    this.add(this.circleRenderer)
 
     if (config.mode === MapType.MAP_LIVE && this.omDataSource) {
       this.omStationRenderer = new StationMarkerRenderer(this.omDataSource, 'yellow')

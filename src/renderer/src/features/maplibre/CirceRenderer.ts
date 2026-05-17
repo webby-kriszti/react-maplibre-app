@@ -11,8 +11,15 @@ export class CircleRenderer implements MapChildRenderer {
   private readonly LABEL_SOURCE = 'stations-label'
   private readonly LINE_SOURCE = 'stations-line'
   private initialized: boolean = false
-  constructor(private readonly datasource: BaseDataSource<Station>) {}
+  private map: maplibregl.Map | null = null
+  constructor(private readonly datasource: BaseDataSource<Station>) {
+    datasource.subscribeToStations(() => {
+      this.circleDirty = true
+      this.labelDirty = true
+    })
+  }
   init(map: maplibregl.Map): void {
+    this.map = map
     map.addSource(this.CIRCLE_SOURCE, {
       type: 'geojson',
       data: {
@@ -39,7 +46,7 @@ export class CircleRenderer implements MapChildRenderer {
       type: 'circle',
       source: this.CIRCLE_SOURCE,
       paint: {
-        'circle-radius': 10,
+        'circle-radius': 20,
         'circle-color': '#ff0000'
       }
     })
@@ -63,7 +70,7 @@ export class CircleRenderer implements MapChildRenderer {
     })
   }
   update(map: maplibregl.Map): void {
-    if (!map.loaded) return
+    if (!map.loaded()) return
     if (!this.initialized) {
       this.init(map)
       this.initialized = true
@@ -78,11 +85,23 @@ export class CircleRenderer implements MapChildRenderer {
     }
   }
   destroy(): void {
-    console.log('hi')
+    // a) ha nincs map (init sose futott), nincs mit csinálni
+    if (!this.map) return
+
+    // b) layerek levétele (mindhárom, név szerint)
+    this.map.removeLayer('circle-layer')
+    this.map.removeLayer('line-layer')
+    this.map.removeLayer('label-layer')
+
+    // c) source-ok levétele (mindhárom, név szerint)
+    this.map.removeSource(this.CIRCLE_SOURCE)
+    this.map.removeSource(this.LINE_SOURCE)
+    this.map.removeSource(this.LABEL_SOURCE)
   }
   private updateCircles(map: maplibregl.Map): void {
     // 1. lekérjük a stationokat
     const stations = this.datasource.items ?? []
+    console.log(stations)
 
     // 2. minden stationból csinálunk egy GeoJSON feature-t
     const features = stations.map((station) => ({
