@@ -5,7 +5,10 @@ import { electronAPI } from '@electron-toolkit/preload'
 const api = {
   getMeasurements: () => ipcRenderer.invoke('weather:get-measurements'),
   addMeasurement: (temperature: number, humidity: number) =>
-    ipcRenderer.invoke('weather:add-measurement', temperature, humidity)
+    ipcRenderer.invoke('weather:add-measurement', temperature, humidity),
+  onSensorData: (callback: (data: unknown) => void) => {
+    ipcRenderer.on('sensor-data', (_event, data) => callback(data))
+  }
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

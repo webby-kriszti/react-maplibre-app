@@ -1,6 +1,6 @@
 import { Weather } from './components/Weather'
 import MaplibreView from './components/MaplibreView'
-import { ReactElement, useState } from 'react'
+import { ReactElement, useEffect, useState } from 'react'
 import { MapType, Tab } from './types'
 import BearBox from './features/zustand/BearBox'
 import Versions from './components/Versions'
@@ -10,6 +10,15 @@ import { StationList } from './components/StationList'
 
 function App(): ReactElement {
   const [activeTab, setActiveTab] = useState<Tab>(Tab.MAP_LIVE)
+
+  // ... a komponens belsejében:
+  useEffect(() => {
+    window.api.onSensorData((data) => {
+      console.log('renderer kapott:', data)
+    })
+    const res = window.api.getMeasurements()
+    console.log(res)
+  }, [])
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>

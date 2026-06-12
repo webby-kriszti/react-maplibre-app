@@ -5,8 +5,9 @@ import icon from '../../resources/icon.png?asset'
 import { AppModule } from './modules/app.module'
 import { NestFactory } from '@nestjs/core'
 import { ElectronIpcTransport } from '@doubleshot/nest-electron'
+import { ElectronGatewayService } from './modules/electron-gateway/electron-gateway.service'
 
-function createWindow(): void {
+function createWindow(): BrowserWindow {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 1800,
@@ -37,6 +38,7 @@ function createWindow(): void {
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
+  return mainWindow
 }
 
 // This method will be called when Electron has finished
@@ -56,19 +58,14 @@ app.whenReady().then(async () => {
     strategy: new ElectronIpcTransport()
   })
   await nestApp.listen()
-  /* const weatherService = nestApp.get(WeatherService)
-
-  ipcMain.handle('weather:get-measurements', () => {
-    return weatherService.getMeasurements()
-  })
-  ipcMain.handle('weather:add-measurement', (_, temperature: number, humidity: number) => {
-    return weatherService.addMeasurement(temperature, humidity)
-  }) */
+  const electronGateway = nestApp.get(ElectronGatewayService)
+  const win = createWindow()
+  electronGateway.registerMainWindow(win)
 
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
 
-  createWindow()
+  //createWindow()
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the

@@ -7,6 +7,7 @@ declare global {
     api: {
       getMeasurements: () => Promise<Measurement[]>
       addMeasurement: (temperature: number, humidity: number) => Promise<void>
+      onSensorData: (callback: (data: unknown) => void) => void
     }
   }
 }
