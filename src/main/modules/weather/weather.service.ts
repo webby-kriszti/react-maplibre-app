@@ -11,7 +11,6 @@ export class WeatherService {
   }
 
   addMeasurement(temperature: number, humidity: number): void {
-    console.log('added')
     const timeStamp = new Date()
     const measurement = {
       id: this.nextId++,

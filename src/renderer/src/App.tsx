@@ -19,6 +19,14 @@ function App(): ReactElement {
     const res = window.api.getMeasurements()
     console.log(res)
   }, [])
+  const start = async (): Promise<void> => {
+    const res = await window.api.startSimulation()
+    console.log('res start', res)
+  }
+  const stop = async (): Promise<void> => {
+    const res = await window.api.stopSimulation()
+    console.log('res stop', res)
+  }
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
@@ -29,6 +37,8 @@ function App(): ReactElement {
         <button onClick={() => setActiveTab(Tab.ZUSTAND)}>Zustand</button>
         <button onClick={() => setActiveTab(Tab.VERSIONS)}>Versions</button>
         <button onClick={() => setActiveTab(Tab.STATIONS)}>Stations</button>
+        <button onClick={start}>Start</button>
+        <button onClick={stop}>Stop</button>
       </div>
       <div style={{ flex: 1, minHeight: 0 }}>
         {activeTab === Tab.MAP_LIVE && <MaplibreView mode={MapType.MAP_LIVE} />}

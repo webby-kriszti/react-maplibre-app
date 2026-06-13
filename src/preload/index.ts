@@ -8,7 +8,9 @@ const api = {
     ipcRenderer.invoke('weather:add-measurement', temperature, humidity),
   onSensorData: (callback: (data: unknown) => void) => {
     ipcRenderer.on('sensor-data', (_event, data) => callback(data))
-  }
+  },
+  startSimulation: () => ipcRenderer.invoke('sim:start'),
+  stopSimulation: () => ipcRenderer.invoke('sim:stop')
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

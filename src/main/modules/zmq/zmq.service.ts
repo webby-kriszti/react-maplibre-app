@@ -4,8 +4,8 @@ import { ElectronGatewayService } from '../electron-gateway/electron-gateway.ser
 
 // Config — itt válthatsz Prod és Dev között
 const zmqConfig = {
-  //backendHost: '192.168.0.201', // Prod
-  backendHost: '192.168.0.200', // Dev (uncomment-eld ha a Prod nem fut)
+  backendHost: '192.168.0.201', // Prod
+  //backendHost: '192.168.0.200', // Dev (uncomment-eld ha a Prod nem fut)
   pubPort: 5555
 }
 
@@ -25,16 +25,14 @@ export class ZmqService implements OnModuleInit, OnModuleDestroy {
     this.socket.subscribe('sensor-data')
     // 4. Loop indítása
     ;(async () => {
-      for await (const [topic, message] of this.socket!) {
-        console.log('catcat', topic.toString(), message.toString())
+      for await (const [, message] of this.socket!) {
         try {
-          const topicStr = topic.toString()
+          //const topicStr = topic.toString()
           const dataStr = message.toString()
           const data = JSON.parse(dataStr)
-          console.log('hi', data)
           //this.mainWindow.webContents.send('sensor-data', data)
           this.electronGateway.sendToRenderer('sensor-data', data)
-          console.log(`[${topicStr}]`, data)
+          //console.log(`[${topicStr}]`, data)
         } catch (err) {
           console.error('SUB message error:', err)
         }

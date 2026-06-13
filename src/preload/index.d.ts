@@ -8,6 +8,8 @@ declare global {
       getMeasurements: () => Promise<Measurement[]>
       addMeasurement: (temperature: number, humidity: number) => Promise<void>
       onSensorData: (callback: (data: unknown) => void) => void
+      startSimulation: () => Promise<unknown>
+      stopSimulation: () => Promise<unknown>
     }
   }
 }

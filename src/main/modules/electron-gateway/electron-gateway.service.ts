@@ -13,7 +13,6 @@ export class ElectronGatewayService {
   }
 
   sendToRenderer(channel: string, data: unknown): void {
-    console.log('catcat2', data)
     if (!this.mainWindow) return
     this.mainWindow.webContents.send(channel, data)
   }
