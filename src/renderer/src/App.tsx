@@ -7,14 +7,16 @@ import Versions from './components/Versions'
 import { StationForm } from './components/StationForm'
 import MeasurementForm from './components/MeasurementForm'
 import { StationList } from './components/StationList'
+import { MeasurementData } from 'src/shared/types'
+import { weatherDevicesService } from './backend-related-stores/weatherDevicesService'
 
 function App(): ReactElement {
   const [activeTab, setActiveTab] = useState<Tab>(Tab.MAP_LIVE)
 
   // ... a komponens belsejében:
   useEffect(() => {
-    window.api.onSensorData((data) => {
-      console.log('renderer kapott:', data)
+    window.api.onSensorData((data: MeasurementData) => {
+      weatherDevicesService.addMeasurement(data)
     })
     const res = window.api.getMeasurements()
     console.log(res)

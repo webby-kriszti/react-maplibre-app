@@ -4,6 +4,9 @@ export interface Measurement {
   humidity: number
   timeStamp: Date
 }
+export type ExtendedMeasurement = Measurement & {
+  pressure: number
+}
 export interface StationMeasurement {
   temperature: number
   timestamp: Date
@@ -28,4 +31,20 @@ export interface Device extends Mappable {
 export enum StationSource {
   METEO = 'meteo',
   OM = 'om'
+}
+export type WeatherDevice = {
+  deviceId: string
+  name: string
+  position: Coordinates
+}
+export type MeasurementData = {
+  device_id: string
+  name: string
+  lat: number
+  lng: number
+  timestamp: number
+  temperature: number
+  humidity: number
+  pressure: number
+  status: number
 }
